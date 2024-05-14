@@ -12,12 +12,17 @@ pygame.display.set_caption("demo")
 clock = pygame.time.Clock()
 test_font = pygame.font.Font('font/Pixeltype.ttf', 50)
 
-sky_surface = pygame.image.load('graphics/Sky.png')
-ground_surface = pygame.image.load('graphics/ground.png')
-text_surface = test_font.render('Demo game', False, 'Black')
-snail_surface = pygame.image.load('graphics/snail/snail1.png')
-snail_x_pos = 600
+sky_surface = pygame.image.load('graphics/Sky.png').convert()
+ground_surface = pygame.image.load('graphics/ground.png').convert()
+text_surface = test_font.render('Demo game', False, 'Black').convert()
 
+
+snail_surface = pygame.image.load('graphics/snail/snail1.png').convert_alpha()
+snail_rect = snail_surface.get_rect(midbottom=(800, 300))
+print(snail_rect.left)
+
+player_surface = pygame.image.load('graphics/Player/player_walk_1.png').convert_alpha()
+player_rect = player_surface.get_rect(midbottom=(80, 300))
 game_running = True
 
 while game_running:
@@ -29,14 +34,22 @@ while game_running:
     screen.blit(sky_surface, (0, 0))
     screen.blit(ground_surface, (0, 300))
     screen.blit(text_surface, (300, 60))
-    snail_x_pos -= 4
+    snail_rect.left -= 4
 
-    if snail_x_pos < 0:
-        snail_x_pos = 800
+    if snail_rect.left < 0:
+        snail_rect.left = 800
 
+    player_rect.left += 1
 
-    screen.blit(snail_surface, (snail_x_pos, 250))
+    screen.blit(snail_surface, snail_rect)
+    screen.blit(player_surface, player_rect)
 
+    # if player_rect.colliderect(snail_rect):
+    #     print('collision')
+
+    mouse_pos = pygame.mouse.get_pos()
+    if player_rect.collidepoint(mouse_pos):
+        print('collision')
 
     # draw all our elements
     # update everything
